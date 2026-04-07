@@ -44,6 +44,16 @@
                             <div id="confidenceFill" class="meter-fill"></div>
                         </div>
                     </div>
+                    
+                    <!-- 피드백(재학습 데이터 수집) UI -->
+                    <div id="feedbackSection" class="feedback-section none">
+                        <p class="feedback-text">AI 분석 결과가 정확했나요? (모델 성능 개선에 활용됩니다)</p>
+                        <div class="feedback-buttons">
+                            <button id="btnCorrect" class="feedback-btn correct">맞아요 👍</button>
+                            <button id="btnIncorrect" class="feedback-btn incorrect">틀렸어요 👎</button>
+                        </div>
+                        <p id="feedbackThanks" class="feedback-thanks none">소중한 의견이 시스템에 반영되었습니다!</p>
+                    </div>
                 </div>
             </div>
         </main>

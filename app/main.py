@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException
-from app.schemas.payload import PredictRequest, PredictResponse
+from app.schemas.payload import PredictRequest, PredictResponse, FeedbackRequest
 from app.ml.model import spam_model
 import time
 
@@ -55,3 +55,25 @@ def predict_spam(request: PredictRequest):
         # MLOps 관점: 예측 실패시 얼럿 트리거를 위해 로깅하고 명확한 HTTP 상태 코드를 반환합니다.
         print(f"Prediction Error: {str(e)}")
         raise HTTPException(status_code=500, detail="Internal prediction engine error")
+
+@app.post("/feedback")
+def collect_feedback(feedback: FeedbackRequest):
+    """사용자의 피드백을 수집하여 모델 재학습 데이터로 활용합니다."""
+    # 실제 프로덕션에서는 데이터베이스나 데이터 레이크(S3) 등에 저장합니다.
+    # 현재는 로컬 파일(feedback.jsonl)에 저장하도록 구현합니다.
+    import json
+    from datetime import datetime
+    
+    feedback_file = os.path.join(os.path.dirname(__file__), "..", "feedback.jsonl")
+    data = feedback.dict()
+    data["timestamp"] = datetime.now().isoformat()
+    
+    try:
+        with open(feedback_file, "a", encoding="utf-8") as f:
+            f.write(json.dumps(data, ensure_ascii=False) + "\n")
+        print(f"Feedback collected: {data['is_correct']} (Model update data)")
+        return {"message": "정상적으로 의견이 수집되었습니다. 더 나은 AI를 만드는데 활용하겠습니다!"}
+    except Exception as e:
+        print(f"Feedback save error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to save feedback.")
+

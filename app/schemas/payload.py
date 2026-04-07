@@ -7,3 +7,8 @@ class PredictResponse(BaseModel):
     is_spam: bool
     confidence: float
     message: str
+
+class FeedbackRequest(BaseModel):
+    text: str = Field(..., title="Analyzed text")
+    prediction: bool = Field(..., title="AI prediction result")
+    is_correct: bool = Field(..., title="User feedback if it was correct or not")

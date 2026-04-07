@@ -277,3 +277,61 @@ button:disabled {
   30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
   40%, 60% { transform: translate3d(4px, 0, 0); }
 }
+
+/* Feedback UI Update */
+.feedback-section {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--glass-border);
+    animation: fadeIn 0.5s ease;
+}
+
+.feedback-text {
+    font-size: 0.9rem !important;
+    color: var(--text-secondary) !important;
+    margin-bottom: 1rem !important;
+    text-align: center;
+}
+
+.feedback-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.feedback-btn {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.95rem;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    flex: 1;
+}
+
+.feedback-btn.correct:hover {
+    background: rgba(16, 185, 129, 0.2);
+    border-color: var(--safe);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
+}
+
+.feedback-btn.incorrect:hover {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: var(--danger);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.1);
+}
+
+.feedback-thanks {
+    text-align: center;
+    color: var(--safe) !important;
+    font-size: 0.95rem !important;
+    font-weight: 600;
+    margin-top: 0.5rem !important;
+    margin-bottom: 0 !important;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

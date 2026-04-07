@@ -10,6 +10,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultMessage = document.getElementById('resultMessage');
     const confidenceValue = document.getElementById('confidenceValue');
     const confidenceFill = document.getElementById('confidenceFill');
+    
+    // 피드백 관련 UI 요소
+    const feedbackSection = document.getElementById('feedbackSection');
+    const btnCorrect = document.getElementById('btnCorrect');
+    const btnIncorrect = document.getElementById('btnIncorrect');
+    const feedbackThanks = document.getElementById('feedbackThanks');
+
+    // 현재 분석 상태 저장용
+    let currentText = "";
+    let currentPrediction = false;
 
     const icons = {
         danger: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`,
@@ -34,6 +44,16 @@ document.addEventListener('DOMContentLoaded', () => {
         resultCard.classList.add('hidden');
         resultCard.classList.remove('danger', 'safe');
         confidenceFill.style.width = '0%';
+        
+        // 피드백 UI 리셋
+        feedbackSection.classList.add('none');
+        btnCorrect.classList.remove('none');
+        btnIncorrect.classList.remove('none');
+        btnCorrect.disabled = false;
+        btnIncorrect.disabled = false;
+        feedbackThanks.classList.add('none');
+        
+        currentText = text;
 
         try {
             // Artificial delay for effect
@@ -64,6 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function showResult(data) {
+        currentPrediction = data.is_spam;
         const confPct = Math.round(data.confidence * 100);
         
         if (data.is_spam) {
@@ -84,6 +105,33 @@ document.addEventListener('DOMContentLoaded', () => {
         
         setTimeout(() => {
             confidenceFill.style.width = `${confPct}%`;
-        }, 50);
+            feedbackSection.classList.remove('none');
+        }, 500);
     }
+
+    // 피드백 데이터 제출 로직
+    async function submitFeedback(isCorrect) {
+        btnCorrect.disabled = true;
+        btnIncorrect.disabled = true;
+        btnCorrect.classList.add('none');
+        btnIncorrect.classList.add('none');
+        feedbackThanks.classList.remove('none');
+        
+        try {
+            await fetch('/feedback', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    text: currentText,
+                    prediction: currentPrediction,
+                    is_correct: isCorrect
+                })
+            });
+        } catch (e) {
+            console.error("Feedback tracking failed:", e);
+        }
+    }
+
+    btnCorrect.addEventListener('click', () => submitFeedback(true));
+    btnIncorrect.addEventListener('click', () => submitFeedback(false));
 });
