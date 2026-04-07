@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Phishing Shield | 실시간 스팸 탐지</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="blob shape1"></div>
+    <div class="blob shape2"></div>
+    
+    <div class="container">
+        <header>
+            <div class="logo">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <h1>AI Phishing Shield</h1>
+            </div>
+            <p>의심스러운 문자나 이메일을 분석하여 실시간으로 위험을 감지합니다.</p>
+        </header>
+
+        <main>
+            <div class="input-group">
+                <textarea id="messageInput" placeholder="분석할 메시지를 여기에 붙여넣으세요...&#10;&#10;예: '[Web발신] 축하합니다! 무료 대출에 당첨되셨습니다. 지금 바로 클릭하세요. http://bit.ly/... '"></textarea>
+                <button id="analyzeBtn">
+                    <span>분석 시작</span>
+                    <div class="loader-spinner none" id="btnLoader"></div>
+                </button>
+            </div>
+
+            <div id="resultCard" class="result-card hidden">
+                <div class="result-header">
+                    <div id="resultIcon"></div>
+                    <h2 id="resultTitle">분석 완료</h2>
+                </div>
+                <div class="result-body">
+                    <p id="resultMessage"></p>
+                    <div class="confidence-meter">
+                        <div class="meter-label">신뢰도 (AI Confidence) <span id="confidenceValue">0%</span></div>
+                        <div class="meter-bar">
+                            <div id="confidenceFill" class="meter-fill"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
