@@ -9,7 +9,6 @@ on:
 env:
   # 내 Docker Hub 사용자명과 생성될 이미지 이름으로 설정
   # PR을 날리거나 푸시할 때 사용할 이미지 이름 지정 
-  env:
   IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/phishing-shield
 
 jobs:
@@ -51,3 +50,34 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  # 로컬 컴퓨터(Self-hosted runner)로 자동 배포
+  deploy:
+    needs: build-and-push
+    # PR이 아닌 실제 푸시 때만 배포 실행
+    if: github.event_name != 'pull_request'
+    # "self-hosted" 태그가 붙은 유저의 로컬 PC에서 실행되도록 지정
+    runs-on: self-hosted
+    
+    steps:
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Pull the latest image
+        run: docker pull ${{ env.IMAGE_NAME }}:latest
+
+      - name: Stop old container (ignore errors if not exists)
+        run: docker stop phishing-api
+        # 컨테이너가 없어서 에러가 나도 다음 단계로 진행 (가장 안전한 방법)
+        continue-on-error: true
+
+      - name: Remove old container
+        run: docker rm phishing-api
+        continue-on-error: true
+
+      - name: Run new container
+        # 백그라운드(-d)로 실행하고, 포트를 매핑하며, 컴퓨터 부팅 시 자동 시작하도록 설정
+        run: docker run -d --name phishing-api -p 8000:8000 --restart unless-stopped ${{ env.IMAGE_NAME }}:latest
