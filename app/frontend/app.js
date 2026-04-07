@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 피드백 관련 UI 요소
     const feedbackSection = document.getElementById('feedbackSection');
+    const feedbackComment = document.getElementById('feedbackComment');
     const btnCorrect = document.getElementById('btnCorrect');
     const btnIncorrect = document.getElementById('btnIncorrect');
     const feedbackThanks = document.getElementById('feedbackThanks');
@@ -47,6 +48,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // 피드백 UI 리셋
         feedbackSection.classList.add('none');
+        feedbackComment.value = "";
+        feedbackComment.classList.remove('none');
         btnCorrect.classList.remove('none');
         btnIncorrect.classList.remove('none');
         btnCorrect.disabled = false;
@@ -111,10 +114,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 피드백 데이터 제출 로직
     async function submitFeedback(isCorrect) {
+        const commentValue = feedbackComment.value.trim();
+        
         btnCorrect.disabled = true;
         btnIncorrect.disabled = true;
         btnCorrect.classList.add('none');
         btnIncorrect.classList.add('none');
+        feedbackComment.classList.add('none');
         feedbackThanks.classList.remove('none');
         
         try {
@@ -124,7 +130,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({
                     text: currentText,
                     prediction: currentPrediction,
-                    is_correct: isCorrect
+                    is_correct: isCorrect,
+                    comment: commentValue
                 })
             });
         } catch (e) {
