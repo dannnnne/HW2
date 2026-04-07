@@ -9,7 +9,8 @@ on:
 env:
   # 내 Docker Hub 사용자명과 생성될 이미지 이름으로 설정
   # PR을 날리거나 푸시할 때 사용할 이미지 이름 지정 
-  IMAGE_NAME: ${{ github.repository_owner }}/phishing-shield
+  env:
+  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/phishing-shield
 
 jobs:
   build-and-push:
